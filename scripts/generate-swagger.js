@@ -1,8 +1,8 @@
-import swaggerJsdoc from 'swagger-jsdoc';
-import { SwaggerDefinition } from 'swagger-jsdoc';
-import path from 'path';
+const swaggerJsdoc = require('swagger-jsdoc');
+const path = require('path');
+const fs = require('fs');
 
-const swaggerDefinition: SwaggerDefinition = {
+const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
     title: 'Discount Service API',
@@ -197,38 +197,20 @@ const swaggerDefinition: SwaggerDefinition = {
   },
 };
 
-// Resolve paths - works in both dev (ts-node) and production (compiled)
-const isProduction = __dirname.includes('dist');
-const routesPath = isProduction
-  ? path.join(__dirname, '../routes/*.js')
-  : path.join(__dirname, '../routes/*.ts');
+const routesPath = path.join(__dirname, '../src/routes/*.ts');
 
 const options = {
   definition: swaggerDefinition,
   apis: [routesPath],
 };
 
-// Generate swagger spec lazily to avoid MongoDB connection issues during module load
-let cachedSwaggerSpec: any = null;
-
-export const getSwaggerSpec = () => {
-  if (!cachedSwaggerSpec) {
-    try {
-      cachedSwaggerSpec = swaggerJsdoc(options);
-    } catch (error) {
-      console.error('Error generating Swagger spec:', error);
-      // Return a minimal spec if generation fails
-      cachedSwaggerSpec = {
-        openapi: '3.0.0',
-        info: swaggerDefinition.info,
-        servers: swaggerDefinition.servers,
-        paths: {},
-      };
-    }
-  }
-  return cachedSwaggerSpec;
-};
-
-// Export for backward compatibility
-export const swaggerSpec = getSwaggerSpec();
+try {
+  const swaggerSpec = swaggerJsdoc(options);
+  const outputPath = path.join(__dirname, '../swagger.json');
+  fs.writeFileSync(outputPath, JSON.stringify(swaggerSpec, null, 2));
+  console.log('✓ Swagger JSON generated successfully at:', outputPath);
+} catch (error) {
+  console.error('Error generating Swagger JSON:', error);
+  process.exit(1);
+}
 
