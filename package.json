@@ -4,7 +4,7 @@
   "description": "Discount Service allows",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npm run generate-swagger && cp swagger.json src/swagger.json && tsc && cp swagger.json dist/swagger.json || true",
+    "build": "npm run generate-swagger && tsc",
     "start": "node dist/index.js",
     "dev": "npm run generate-swagger && ts-node src/index.ts",
     "generate-swagger": "node scripts/generate-swagger.js",
