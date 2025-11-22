@@ -1,0 +1,86 @@
+{
+  "examples": {
+    "example1_percentage_discount_all_products": {
+      "description": "Percentage discount promotion applicable to all products",
+      "payload": {
+        "code": "SUMMER2024",
+        "discountType": "percentage",
+        "discountValue": 15,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 1000,
+        "isActive": true
+      }
+    },
+    "example2_fixed_discount_specific_categories": {
+      "description": "Fixed amount discount for specific product categories",
+      "payload": {
+        "code": "ELECTRONICS50",
+        "eligibleProductCategories": ["electronics", "computers", "phones"],
+        "discountType": "fixed",
+        "discountValue": 50,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 500,
+        "isActive": true
+      }
+    },
+    "example3_percentage_discount_specific_products": {
+      "description": "Percentage discount for specific product IDs",
+      "payload": {
+        "code": "PROD123",
+        "eligibleProductIds": ["prod-001", "prod-002", "prod-003"],
+        "discountType": "percentage",
+        "discountValue": 20,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 200,
+        "isActive": true
+      }
+    },
+    "example4_minimal_required_fields": {
+      "description": "Minimal payload with only required fields (code will be auto-generated)",
+      "payload": {
+        "discountType": "percentage",
+        "discountValue": 10,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 100
+      }
+    },
+    "example5_black_friday_promotion": {
+      "description": "Black Friday promotion with category and product restrictions",
+      "payload": {
+        "code": "BLACKFRIDAY2024",
+        "eligibleProductCategories": ["clothing", "shoes", "accessories"],
+        "eligibleProductIds": ["bf-special-001", "bf-special-002"],
+        "discountType": "percentage",
+        "discountValue": 30,
+        "expirationDate": "2024-11-30T23:59:59Z",
+        "usageLimit": 5000,
+        "isActive": true
+      }
+    },
+    "example6_fixed_amount_all_products": {
+      "description": "Fixed $25 discount applicable to all products",
+      "payload": {
+        "code": "SAVE25",
+        "discountType": "fixed",
+        "discountValue": 25,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 1000,
+        "isActive": true
+      }
+    }
+  },
+  "field_descriptions": {
+    "code": "Optional. Promotion code (3-50 characters). If not provided, will be auto-generated.",
+    "eligibleProductCategories": "Optional. Array of product categories this promotion applies to. If empty or not provided, applies to all products.",
+    "eligibleProductIds": "Optional. Array of specific product IDs this promotion applies to. If empty or not provided, applies to all products.",
+    "discountType": "Required. Either 'percentage' or 'fixed'.",
+    "discountValue": "Required. The discount amount. For percentage: 0-100, for fixed: any positive number.",
+    "expirationDate": "Required. ISO 8601 date format. Must be in the future.",
+    "usageLimit": "Required. Maximum number of times this promotion can be used (minimum 1).",
+    "isActive": "Optional. Boolean to enable/disable the promotion. Defaults to true."
+  },
+  "curl_examples": {
+    "create_promotion": "curl -X POST http://localhost:3000/api/promotions \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"code\": \"SUMMER2024\",\n    \"discountType\": \"percentage\",\n    \"discountValue\": 15,\n    \"expirationDate\": \"2024-12-31T23:59:59Z\",\n    \"usageLimit\": 1000,\n    \"isActive\": true\n  }'"
+  }
+}
+

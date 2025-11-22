@@ -1,5 +1,6 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import { SwaggerDefinition } from 'swagger-jsdoc';
+import path from 'path';
 
 const swaggerDefinition: SwaggerDefinition = {
   openapi: '3.0.0',
@@ -15,6 +16,20 @@ const swaggerDefinition: SwaggerDefinition = {
     {
       url: process.env.API_URL || 'http://localhost:3000',
       description: 'Development server',
+    },
+  ],
+  tags: [
+    {
+      name: 'Vouchers',
+      description: 'Voucher management endpoints',
+    },
+    {
+      name: 'Promotions',
+      description: 'Promotion management endpoints',
+    },
+    {
+      name: 'Orders',
+      description: 'Order and discount application endpoints',
     },
   ],
   components: {
@@ -182,9 +197,15 @@ const swaggerDefinition: SwaggerDefinition = {
   },
 };
 
+// Resolve paths - works in both dev (ts-node) and production (compiled)
+const isProduction = __dirname.includes('dist');
+const routesPath = isProduction
+  ? path.join(__dirname, '../routes/*.js')
+  : path.join(__dirname, '../routes/*.ts');
+
 const options = {
   definition: swaggerDefinition,
-  apis: ['./src/routes/*.ts', './src/index.ts'],
+  apis: [routesPath],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

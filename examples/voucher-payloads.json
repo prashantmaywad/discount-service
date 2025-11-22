@@ -1,0 +1,107 @@
+{
+  "examples": {
+    "example1_percentage_discount_no_minimum": {
+      "description": "Percentage discount voucher with no minimum order value",
+      "payload": {
+        "code": "SAVE20",
+        "discountType": "percentage",
+        "discountValue": 20,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 1000,
+        "isActive": true
+      }
+    },
+    "example2_fixed_discount_with_minimum": {
+      "description": "Fixed amount discount with minimum order value requirement",
+      "payload": {
+        "code": "SAVE50",
+        "discountType": "fixed",
+        "discountValue": 50,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 500,
+        "minimumOrderValue": 100,
+        "isActive": true
+      }
+    },
+    "example3_percentage_discount_with_minimum": {
+      "description": "Percentage discount with minimum order value",
+      "payload": {
+        "code": "WELCOME10",
+        "discountType": "percentage",
+        "discountValue": 10,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 2000,
+        "minimumOrderValue": 50,
+        "isActive": true
+      }
+    },
+    "example4_minimal_required_fields": {
+      "description": "Minimal payload with only required fields (code will be auto-generated)",
+      "payload": {
+        "discountType": "percentage",
+        "discountValue": 15,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 100
+      }
+    },
+    "example5_black_friday_voucher": {
+      "description": "Black Friday voucher with high discount and minimum order",
+      "payload": {
+        "code": "BLACKFRIDAY30",
+        "discountType": "percentage",
+        "discountValue": 30,
+        "expirationDate": "2024-11-30T23:59:59Z",
+        "usageLimit": 10000,
+        "minimumOrderValue": 100,
+        "isActive": true
+      }
+    },
+    "example6_fixed_amount_no_minimum": {
+      "description": "Fixed $25 discount with no minimum order value",
+      "payload": {
+        "code": "SAVE25",
+        "discountType": "fixed",
+        "discountValue": 25,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 1000,
+        "isActive": true
+      }
+    },
+    "example7_inactive_voucher": {
+      "description": "Inactive voucher (disabled but not deleted)",
+      "payload": {
+        "code": "OLDCODE",
+        "discountType": "percentage",
+        "discountValue": 10,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 100,
+        "isActive": false
+      }
+    },
+    "example8_limited_use_voucher": {
+      "description": "Voucher with very limited usage (exclusive offer)",
+      "payload": {
+        "code": "VIP50",
+        "discountType": "percentage",
+        "discountValue": 50,
+        "expirationDate": "2024-12-31T23:59:59Z",
+        "usageLimit": 10,
+        "minimumOrderValue": 200,
+        "isActive": true
+      }
+    }
+  },
+  "field_descriptions": {
+    "code": "Optional. Voucher code (3-50 characters). If not provided, will be auto-generated.",
+    "discountType": "Required. Either 'percentage' or 'fixed'.",
+    "discountValue": "Required. The discount amount. For percentage: 0-100 (e.g., 20 = 20% off), for fixed: any positive number (e.g., 50 = $50 off).",
+    "expirationDate": "Required. ISO 8601 date format. Must be in the future.",
+    "usageLimit": "Required. Maximum number of times this voucher can be used (minimum 1).",
+    "minimumOrderValue": "Optional. Minimum order value required to use this voucher. If not provided, no minimum is required.",
+    "isActive": "Optional. Boolean to enable/disable the voucher. Defaults to true."
+  },
+  "curl_examples": {
+    "create_voucher": "curl -X POST http://localhost:3000/api/vouchers \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"code\": \"SAVE20\",\n    \"discountType\": \"percentage\",\n    \"discountValue\": 20,\n    \"expirationDate\": \"2024-12-31T23:59:59Z\",\n    \"usageLimit\": 1000,\n    \"isActive\": true\n  }'"
+  }
+}
+
