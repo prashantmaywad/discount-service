@@ -10,7 +10,20 @@ import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
 import { connectDB } from './config/database';
-import { swaggerSpec } from './config/swagger';
+import { getSwaggerSpec } from './config/swagger';
+import fs from 'fs';
+import path from 'path';
+
+// Try to load static swagger.json (for Vercel), fallback to null if not found
+let swaggerDocument: any = null;
+try {
+  const swaggerPath = path.join(__dirname, '../swagger.json');
+  if (fs.existsSync(swaggerPath)) {
+    swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
+  }
+} catch (error) {
+  // swagger.json not found or invalid, will use dynamic generation
+}
 import { errorHandler } from './middleware/errorHandler';
 import voucherRoutes from './routes/voucherRoutes';
 import promotionRoutes from './routes/promotionRoutes';
@@ -21,7 +34,13 @@ const PORT: number = parseInt(process.env.PORT || '3000', 10);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Swagger documentation - use static file for Vercel, dynamic for local dev
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', (req: Request, res: Response, next: any) => {
+  // Use static swagger.json if available (for Vercel), otherwise generate dynamically (for local dev)
+  const swaggerSpec = swaggerDocument ? swaggerDocument : getSwaggerSpec();
+  swaggerUi.setup(swaggerSpec)(req, res, next);
+});
 
 app.get('/', (_req: Request, res: Response) => {
   res.json({
