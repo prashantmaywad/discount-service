@@ -1,0 +1,164 @@
+{
+  "endpoint": "POST /api/orders/apply-discounts",
+  "description": "Apply vouchers and promotions to an order",
+  "examples": {
+    "example1_basic_order_no_discounts": {
+      "description": "Basic order without any discounts",
+      "payload": {
+        "items": [
+          {
+            "productId": "prod-001",
+            "productName": "Laptop",
+            "category": "electronics",
+            "price": 999.99,
+            "quantity": 1
+          },
+          {
+            "productId": "prod-002",
+            "productName": "Mouse",
+            "category": "electronics",
+            "price": 29.99,
+            "quantity": 2
+          }
+        ]
+      }
+    },
+    "example2_order_with_voucher": {
+      "description": "Order with a voucher code applied",
+      "payload": {
+        "items": [
+          {
+            "productId": "prod-001",
+            "productName": "Laptop",
+            "category": "electronics",
+            "price": 999.99,
+            "quantity": 1
+          }
+        ],
+        "voucherCodes": ["SAVE20"]
+      }
+    },
+    "example3_order_with_promotion": {
+      "description": "Order with a promotion code applied",
+      "payload": {
+        "items": [
+          {
+            "productId": "prod-003",
+            "productName": "T-Shirt",
+            "category": "clothing",
+            "price": 49.99,
+            "quantity": 2
+          }
+        ],
+        "promotionCodes": ["SUMMER2024"]
+      }
+    },
+    "example4_order_with_both_voucher_and_promotion": {
+      "description": "Order with both voucher and promotion codes",
+      "payload": {
+        "items": [
+          {
+            "productId": "prod-001",
+            "productName": "Laptop",
+            "category": "electronics",
+            "price": 999.99,
+            "quantity": 1
+          },
+          {
+            "productId": "prod-003",
+            "productName": "T-Shirt",
+            "category": "clothing",
+            "price": 49.99,
+            "quantity": 2
+          }
+        ],
+        "voucherCodes": ["SAVE20"],
+        "promotionCodes": ["SUMMER2024"]
+      }
+    },
+    "example5_order_with_custom_orderId": {
+      "description": "Order with a custom order ID",
+      "payload": {
+        "orderId": "ORDER-12345",
+        "items": [
+          {
+            "productId": "prod-001",
+            "productName": "Laptop",
+            "category": "electronics",
+            "price": 999.99,
+            "quantity": 1
+          }
+        ],
+        "voucherCodes": ["SAVE20"]
+      }
+    },
+    "example6_multiple_items_multiple_discounts": {
+      "description": "Complex order with multiple items and multiple discount codes",
+      "payload": {
+        "items": [
+          {
+            "productId": "prod-001",
+            "productName": "Laptop",
+            "category": "electronics",
+            "price": 999.99,
+            "quantity": 1
+          },
+          {
+            "productId": "prod-002",
+            "productName": "Mouse",
+            "category": "electronics",
+            "price": 29.99,
+            "quantity": 2
+          },
+          {
+            "productId": "prod-003",
+            "productName": "T-Shirt",
+            "category": "clothing",
+            "price": 49.99,
+            "quantity": 3
+          }
+        ],
+        "voucherCodes": ["SAVE20", "WELCOME10"],
+        "promotionCodes": ["SUMMER2024", "ELECTRONICS50"]
+      }
+    },
+    "example7_items_without_category": {
+      "description": "Order items without category field (optional)",
+      "payload": {
+        "items": [
+          {
+            "productId": "prod-001",
+            "productName": "Laptop",
+            "price": 999.99,
+            "quantity": 1
+          }
+        ],
+        "promotionCodes": ["SUMMER2024"]
+      }
+    }
+  },
+  "field_descriptions": {
+    "orderId": "Optional. Custom order ID. If not provided, a UUID will be auto-generated.",
+    "items": "Required. Array of order items (minimum 1 item).",
+    "items[].productId": "Required. Unique identifier for the product.",
+    "items[].productName": "Required. Name of the product.",
+    "items[].category": "Optional. Product category (useful for category-based promotions).",
+    "items[].price": "Required. Price per unit (must be non-negative).",
+    "items[].quantity": "Required. Quantity of items (must be positive integer, minimum 1).",
+    "voucherCodes": "Optional. Array of voucher codes to apply to the order.",
+    "promotionCodes": "Optional. Array of promotion codes to apply to the order."
+  },
+  "response_structure": {
+    "orderId": "string - The order ID (provided or auto-generated)",
+    "subtotal": "number - Total before discounts",
+    "appliedVouchers": "string[] - List of successfully applied voucher codes",
+    "appliedPromotions": "string[] - List of successfully applied promotion codes",
+    "totalDiscount": "number - Total discount amount applied",
+    "finalAmount": "number - Final amount after all discounts",
+    "discountBreakdown": {
+      "voucherDiscounts": "Array of { code: string, discount: number }",
+      "promotionDiscounts": "Array of { code: string, discount: number }"
+    }
+  }
+}
+
