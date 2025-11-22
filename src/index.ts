@@ -17,12 +17,39 @@ import path from 'path';
 // Try to load static swagger.json (for Vercel), fallback to null if not found
 let swaggerDocument: any = null;
 try {
-  const swaggerPath = path.join(__dirname, '../swagger.json');
-  if (fs.existsSync(swaggerPath)) {
-    swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
+  // Method 1: Try direct import (most reliable for Vercel)
+  try {
+    swaggerDocument = require('./swagger.json');
+    console.log('✓ Loaded Swagger JSON via require');
+  } catch (importError) {
+    // Method 2: Try file system paths (fallback)
+    const possiblePaths = [
+      path.join(__dirname, 'swagger.json'),      // Same dir as compiled code (Vercel)
+      path.join(__dirname, '../swagger.json'),   // Parent dir
+      path.join(__dirname, './swagger.json'),     // Current dir (alternative)
+      path.join(process.cwd(), 'swagger.json'),   // Current working directory
+      path.join(process.cwd(), 'dist', 'swagger.json'), // Dist folder
+    ];
+    
+    for (const swaggerPath of possiblePaths) {
+      try {
+        if (fs.existsSync(swaggerPath)) {
+          const fileContent = fs.readFileSync(swaggerPath, 'utf8');
+          swaggerDocument = JSON.parse(fileContent);
+          console.log('✓ Loaded Swagger JSON from:', swaggerPath);
+          break;
+        }
+      } catch (err) {
+        continue;
+      }
+    }
+  }
+  
+  if (!swaggerDocument) {
+    console.log('⚠ Swagger JSON not found, will use dynamic generation');
   }
 } catch (error) {
-  // swagger.json not found or invalid, will use dynamic generation
+  console.log('⚠ Error loading Swagger JSON, using dynamic generation:', error);
 }
 import { errorHandler } from './middleware/errorHandler';
 import voucherRoutes from './routes/voucherRoutes';
@@ -37,9 +64,14 @@ app.use(express.urlencoded({ extended: true }));
 // Swagger documentation - use static file for Vercel, dynamic for local dev
 app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', (req: Request, res: Response, next: any) => {
-  // Use static swagger.json if available (for Vercel), otherwise generate dynamically (for local dev)
-  const swaggerSpec = swaggerDocument ? swaggerDocument : getSwaggerSpec();
-  swaggerUi.setup(swaggerSpec)(req, res, next);
+  try {
+    // Use static swagger.json if available (for Vercel), otherwise generate dynamically (for local dev)
+    const swaggerSpec = swaggerDocument || getSwaggerSpec();
+    return swaggerUi.setup(swaggerSpec)(req, res, next);
+  } catch (error) {
+    console.error('Error setting up Swagger UI:', error);
+    return res.status(500).json({ error: 'Failed to load API documentation' });
+  }
 });
 
 app.get('/', (_req: Request, res: Response) => {
