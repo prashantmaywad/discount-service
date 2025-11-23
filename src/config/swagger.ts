@@ -7,7 +7,14 @@ const swaggerDefinition: SwaggerDefinition = {
   info: {
     title: 'Discount Service API',
     version: '1.0.0',
-    description: 'API for managing vouchers, promotions, and applying discounts to orders',
+    description: `API for managing vouchers, promotions, and applying discounts to orders.
+
+**Rate Limiting:**
+- General API: 100 requests per 15 minutes
+- Write operations (POST/PUT/DELETE): 20 requests per 15 minutes  
+- Order discount application: 10 requests per 15 minutes
+
+Rate limit information is included in response headers: \`RateLimit-*\``,
     contact: {
       name: 'API Support',
     },
@@ -190,6 +197,21 @@ const swaggerDefinition: SwaggerDefinition = {
             type: 'array',
             items: { type: 'object' },
             description: 'Validation error details',
+          },
+        },
+      },
+      RateLimitError: {
+        type: 'object',
+        properties: {
+          error: {
+            type: 'string',
+            description: 'Rate limit error message',
+            example: 'Too many requests from this IP, please try again later.',
+          },
+          retryAfter: {
+            type: 'string',
+            description: 'Time to wait before retrying',
+            example: '15 minutes',
           },
         },
       },

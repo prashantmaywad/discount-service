@@ -52,6 +52,7 @@ try {
   console.log('⚠ Error loading Swagger JSON, using dynamic generation:', error);
 }
 import { errorHandler } from './middleware/errorHandler';
+import { generalLimiter } from './middleware/rateLimiter';
 import voucherRoutes from './routes/voucherRoutes';
 import promotionRoutes from './routes/promotionRoutes';
 import orderRoutes from './routes/orderRoutes';
@@ -60,6 +61,9 @@ const app = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Apply general rate limiting to all API routes
+app.use('/api', generalLimiter);
 
 // Swagger documentation - use static file for Vercel, dynamic for local dev
 app.use('/api-docs', swaggerUi.serve);

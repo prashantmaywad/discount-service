@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { PromotionController } from '../controllers/promotionController';
 import { validate } from '../middleware/validation';
+import { strictLimiter } from '../middleware/rateLimiter';
 import {
   createPromotionValidator,
   updatePromotionValidator,
@@ -102,9 +103,16 @@ router.get('/:id', promotionController.getPromotionById.bind(promotionController
  *               $ref: '#/components/schemas/Error'
  *       409:
  *         description: Promotion code already exists
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RateLimitError'
  */
 router.post(
   '/',
+  strictLimiter,
   validate(createPromotionValidator),
   promotionController.createPromotion.bind(promotionController)
 );
@@ -167,9 +175,16 @@ router.post(
  *         description: Promotion not found
  *       409:
  *         description: Promotion code already exists
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RateLimitError'
  */
 router.put(
   '/:id',
+  strictLimiter,
   validate(updatePromotionValidator),
   promotionController.updatePromotion.bind(promotionController)
 );
@@ -199,8 +214,14 @@ router.put(
  *                   type: string
  *       404:
  *         description: Promotion not found
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RateLimitError'
  */
-router.delete('/:id', promotionController.deletePromotion.bind(promotionController));
+router.delete('/:id', strictLimiter, promotionController.deletePromotion.bind(promotionController));
 
 export default router;
 

@@ -497,6 +497,16 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
           }
         }
       }
@@ -590,6 +600,16 @@
           },
           "409": {
             "description": "Promotion code already exists"
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
           }
         }
       }
@@ -722,6 +742,16 @@
           },
           "409": {
             "description": "Promotion code already exists"
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
           }
         }
       },
@@ -759,6 +789,16 @@
           },
           "404": {
             "description": "Promotion not found"
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
           }
         }
       }
@@ -852,6 +892,16 @@
           },
           "409": {
             "description": "Voucher code already exists"
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
           }
         }
       }
@@ -975,6 +1025,16 @@
           },
           "409": {
             "description": "Voucher code already exists"
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
           }
         }
       },
@@ -1012,6 +1072,16 @@
           },
           "404": {
             "description": "Voucher not found"
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateLimitError"
+                }
+              }
+            }
           }
         }
       }

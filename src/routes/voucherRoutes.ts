@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { VoucherController } from '../controllers/voucherController';
 import { validate } from '../middleware/validation';
+import { strictLimiter } from '../middleware/rateLimiter';
 import {
   createVoucherValidator,
   updateVoucherValidator,
@@ -72,8 +73,15 @@ router.get('/', voucherController.getVouchers.bind(voucherController));
  *               $ref: '#/components/schemas/Error'
  *       409:
  *         description: Voucher code already exists
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RateLimitError'
  */
 router.post('/',
+  strictLimiter,
   validate(createVoucherValidator),
   voucherController.createVoucher.bind(voucherController)
 );
@@ -160,9 +168,16 @@ router.get('/:id', voucherController.getVoucherById.bind(voucherController));
  *         description: Voucher not found
  *       409:
  *         description: Voucher code already exists
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RateLimitError'
  */
 router.put(
   '/:id',
+  strictLimiter,
   validate(updateVoucherValidator),
   voucherController.updateVoucher.bind(voucherController)
 );
@@ -192,8 +207,14 @@ router.put(
  *                   type: string
  *       404:
  *         description: Voucher not found
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RateLimitError'
  */
-router.delete('/:id', voucherController.deleteVoucher.bind(voucherController));
+router.delete('/:id', strictLimiter, voucherController.deleteVoucher.bind(voucherController));
 
 export default router;
 

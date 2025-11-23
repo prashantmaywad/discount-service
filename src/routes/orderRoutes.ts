@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { OrderController } from '../controllers/orderController';
 import { validate } from '../middleware/validation';
+import { veryStrictLimiter } from '../middleware/rateLimiter';
 import { applyDiscountValidator } from '../validators/orderValidator';
 
 const router = Router();
@@ -180,9 +181,16 @@ router.get('/:orderId', orderController.getOrderById.bind(orderController));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       429:
+ *         description: Too many requests
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RateLimitError'
  */
 router.post(
   '/apply-discounts',
+  veryStrictLimiter,
   validate(applyDiscountValidator),
   orderController.applyDiscounts.bind(orderController)
 );
