@@ -206,19 +206,9 @@ const options = {
 
 try {
   const swaggerSpec = swaggerJsdoc(options);
-  const rootPath = path.join(__dirname, '..');
-  const outputPath = path.join(rootPath, 'swagger.json');
-  const distPath = path.join(rootPath, 'dist', 'swagger.json');
-  
-  // Write to root
+  const outputPath = path.join(__dirname, '../swagger.json');
   fs.writeFileSync(outputPath, JSON.stringify(swaggerSpec, null, 2));
-  console.log('✓ Swagger JSON generated at:', outputPath);
-  
-  // Also copy to dist folder for Vercel
-  if (fs.existsSync(path.join(rootPath, 'dist'))) {
-    fs.writeFileSync(distPath, JSON.stringify(swaggerSpec, null, 2));
-    console.log('✓ Swagger JSON copied to dist folder');
-  }
+  console.log('✓ Swagger JSON generated successfully at:', outputPath);
 } catch (error) {
   console.error('Error generating Swagger JSON:', error);
   process.exit(1);
